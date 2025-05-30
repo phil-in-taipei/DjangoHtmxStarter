@@ -1,6 +1,9 @@
 # Environments
 djangohtmxuserauth/djangohtmxuseraut/.env
 
+# db
+djangohtmxuserauth/db.sqlite3
+
 #virtualenv
 venv
 
