@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from .forms import CustomUserCreationForm
 
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -22,10 +23,12 @@ def register(request):
     
     return render(request, 'accounts/register.html', {'form': form})
 
+
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     redirect_authenticated_user = True
 
+
 @login_required
 def home(request):
-    return render(request, 'accounts/home.html')
+    return render(request, 'home.html')
