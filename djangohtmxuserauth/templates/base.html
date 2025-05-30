@@ -1,4 +1,6 @@
 
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +13,8 @@
     
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- HTMX CSRF Configuration -->
     <script>
@@ -20,33 +24,6 @@
         });
     </script>
     
-    <!-- Custom CSS -->
-    <style>
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .error-message {
-            color: #dc3545;
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-        }
-        .success-message {
-            color: #198754;
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-        }
-        .form-container {
-            max-width: 500px;
-            margin: 2rem auto;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .main-content {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -63,7 +40,7 @@
                     </span>
                     <form method="post" action="{% url 'logout' %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="nav-link btn btn-link p-0 border-0 text-white">Logout</button>
+                        <button type="submit" class="nav-button">Logout</button>
                     </form>
                 <a class="nav-link" href="{% url 'things:thing_list' %}">Things</a>
 

@@ -1,0 +1,50 @@
+.nav-button {
+    background: none !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+    color: rgba(255,255,255,.55) !important;
+    text-decoration: none !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: inherit !important;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    color: rgba(255,255,255,.75) !important;
+}
+
+.nav-button:focus {
+    color: rgba(255,255,255,.75) !important;
+    outline: none;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+.error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+        
+
+.success-message {
+    color: #198754;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+.form-container {
+    max-width: 500px;
+     margin: 2rem auto;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+        
+.main-content {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
