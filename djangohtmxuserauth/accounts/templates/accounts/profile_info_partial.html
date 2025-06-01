@@ -1,0 +1,116 @@
+{% load widget_tweaks %}
+
+
+{% if edit_success %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle"></i> Profile updated successfully!
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if show_form %}
+    <!-- Edit Form -->
+    <form hx-post="{% url 'update_profile' %}"
+          hx-target="#profile-info"
+          hx-swap="innerHTML"
+          class="needs-validation"
+          novalidate>
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username:</label>
+                    <p class="form-control-plaintext">{{ user.username }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Serial Number:</label>
+                    <p class="form-control-plaintext">
+                        <code>{{ user.userprofile.serial_number }}</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.given_name.label_tag }}
+                    {{ form.given_name }}
+                    {% if form.given_name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.given_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.surname.label_tag }}
+                    {{ form.surname }}
+                    {% if form.surname.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.surname.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check"></i> Save Changes
+            </button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    hx-get="{% url 'user_profile' %}"
+                    hx-target="#profile-info"
+                    hx-swap="innerHTML"
+                    onclick="document.getElementById('quick-actions').style.display='block'">
+                <i class="bi bi-x"></i> Cancel
+            </button>
+        </div>
+    </form>
+{% else %}
+    <!-- Display Mode -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Username:</label>
+                <p class="form-control-plaintext">{{ user.username }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Serial Number:</label>
+                <p class="form-control-plaintext">
+                    <code>{{ user.userprofile.serial_number }}</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">First Name:</label>
+                <p class="form-control-plaintext">{{ user.userprofile.given_name|default:"Not set" }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Last Name:</label>
+                <p class="form-control-plaintext">{{ user.userprofile.surname|default:"Not set" }}</p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if not show_form %}
+<script>
+    // Show the quick actions section when we're back in display mode
+    document.getElementById('quick-actions').style.display = 'block';
+</script>
+{% endif %}

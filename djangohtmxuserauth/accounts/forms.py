@@ -22,3 +22,24 @@ class CustomUserCreationForm(UserCreationForm):
                 surname=self.cleaned_data['surname']
             )
         return user
+
+
+class UserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['given_name', 'surname']
+        widgets = {
+            'given_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your first name'
+            }),
+            'surname': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your last name'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['given_name'].label = 'First Name'
+        self.fields['surname'].label = 'Last Name'
