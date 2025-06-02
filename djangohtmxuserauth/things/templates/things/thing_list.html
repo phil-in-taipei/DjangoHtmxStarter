@@ -1,86 +1,142 @@
-
 {% extends 'base.html' %}
 
 {% load widget_tweaks %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>My Things</h1>
-                    <span class="text-muted">Welcome, {{ user_profile.given_name }}!</span>
-                </div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>My Things</h1>
+                <span class="text-muted">Welcome, {{ user_profile.given_name }}!</span>
+            </div>
 
-                {% if things %}
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Your Things ({{ things.count }})</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Created</th>
-                                            <th width="100">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for thing in things %}
-                                            <tr id="thing-{{ thing.id }}">
-                                                <td>
-                                                    <strong>{{ thing.name }}</strong>
-                                                </td>
-                                                <td>
-                                                    {% if thing.description %}
-                                                        {{ thing.description|truncatewords:10 }}
-                                                    {% else %}
-                                                        <em class="text-muted">No description</em>
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    <small class="text-muted">
-                                                        {{ thing.created_at|date:"M d, Y" }}
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        hx-delete="{% url 'things:delete' thing.id %}"
-                                                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                                        hx-target="#thing-{{ thing.id }}"
-                                                        hx-swap="outerHTML"
-                                                        hx-confirm="Are you sure you want to delete '{{ thing.name }}'?"
-                                                        title="Delete {{ thing.name }}">
-                                                        <i class="bi bi-trash"></i> Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="alert alert-info" role="alert">
-                        <h4 class="alert-heading">No things yet!</h4>
-                        <p>You haven't created any things yet. You can add them through the admin panel.</p>
-                        <hr>
-                        <p class="mb-0">
-                            <a href="/admin/" class="btn btn-primary">Go to Admin Panel</a>
-                        </p>
-                    </div>
-                {% endif %}
-
-                <div class="mt-4">
-                    <a href="/" class="btn btn-secondary">← Back to Home</a>
-                    <a href="/admin/things/thing/add/" class="btn btn-success">Add New Thing</a>
+            <!-- Collapsible Form Section -->
+            <div id="collapseThingForm" class="collapse mb-4">
+                <div id="form-container">
+                    {% include 'things/partials/thing_form.html' with form=form %}
                 </div>
+            </div>
+
+            {% if things %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Things (<span id="thing-count">{{ things.count }}</span>)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Created</th>
+                                    <th width="100">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="things-tbody">
+                                {% for thing in things %}
+                                <tr id="thing-{{ thing.id }}">
+                                    <td>
+                                        <strong>{{ thing.name }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if thing.description %}
+                                            {{ thing.description|truncatewords:10 }}
+                                        {% else %}
+                                            <em class="text-muted">No description</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ thing.created_at|date:"M d, Y" }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-sm btn-outline-danger"
+                                            hx-delete="{% url 'things:delete' thing.id %}"
+                                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                            hx-target="#thing-{{ thing.id }}"
+                                            hx-swap="outerHTML"
+                                            hx-confirm="Are you sure you want to delete '{{ thing.name }}'?"
+                                            hx-on::after-request="if(event.detail.successful) document.getElementById('thing-count').textContent = parseInt(document.getElementById('thing-count').textContent) - 1"
+                                            title="Delete {{ thing.name }}">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div id="empty-state" class="alert alert-info" role="alert">
+                <h4 class="alert-heading">No things yet!</h4>
+                <p>You haven't created any things yet. Click "Add Another Thing" below to get started.</p>
+            </div>
+            
+            <!-- Hidden table structure for when first item is added -->
+            <div id="things-table" class="card" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Things (<span id="thing-count">0</span>)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Created</th>
+                                    <th width="100">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="things-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="/" class="btn btn-secondary">← Back to Home</a>
+                <button class="btn btn-outline-secondary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapseThingForm"
+                        aria-expanded="false" aria-controls="collapseThingForm">
+                    Add Another Thing
+                </button>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+// Handle showing table when first item is added (if starting from empty state)
+document.body.addEventListener('htmx:afterRequest', function(evt) {
+    if (evt.detail.successful && evt.detail.xhr.status === 200) {
+        const emptyState = document.getElementById('empty-state');
+        const thingsTable = document.getElementById('things-table');
+        
+        if (emptyState && thingsTable) {
+            emptyState.style.display = 'none';
+            thingsTable.style.display = 'block';
+        }
+    }
+});
+
+// Remove table-success class after a few seconds for visual feedback
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+    const newRow = evt.target.querySelector('.table-success');
+    if (newRow) {
+        setTimeout(() => {
+            newRow.classList.remove('table-success');
+        }, 2000);
+    }
+});
+</script>
 {% endblock %}
